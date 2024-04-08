@@ -1,0 +1,18 @@
+{
+  "name": "reflx",
+  "version": "0.0.0",
+  "description": "A small library for adding reactivity to the DOM",
+  "keywords": "reactive frontend",
+  "license": "MIT",
+  "repository": "shin1m/reflx",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "jsdoc2md": "jsdoc2md index.js state.js >API.md"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdoc-to-markdown": "^8.0.1"
+  }
+}
