@@ -14,6 +14,7 @@ The DOM composition is heavily inspired by VanJS:
         '.'
       )
     );
+[Try on JSFiddle](https://jsfiddle.net/shin1m/6uw8svjf/)
 
 `$add` adds DOM elements to the parent.
 `$tags` is the proxy object with dynamic properties.
@@ -36,6 +37,7 @@ Reactivity is enabled by passing functions to `$add` or element creators:
         button({onclick: () => count.value = 0}, 'Reset')
       )
     );
+[Try on JSFiddle](https://jsfiddle.net/shin1m/23kqfdrL/)
 
 `() => count.value` is a reactive function which runs everytime after `count.value` has changed.
 The content returned by the function is added/applied to the parent element as for `$add`.
@@ -65,8 +67,9 @@ Reactive blocks can be nested:
         button({onclick: () => ++child.value}, 'Child +1')
       )
     );
+[Try on JSFiddle](https://jsfiddle.net/shin1m/8yga5r4L/)
 
-`[`[${++serial}]{`, ..., '}']` is just for seeing how reactive functions run.
+```[`[${++serial}]{`, ..., '}']``` is just for seeing how reactive functions run.
 When 'Parent +1' is clicked, both the parent and the child reactive blocks run.
 When 'Child +1' is clicked, only the child reactive block runs.
 
@@ -83,6 +86,7 @@ They can be preserved by using `$for`:
       '}']),
       button({onclick: () => items.value = items.value.toReversed()}, 'Flip')
     );
+[Try on JSFiddle](https://jsfiddle.net/shin1m/f8pmqdr1/)
 
 `$for(x, () => ...)` reuses the reactive block for `x` if it already exists in the parent reactive block.
 When 'Flip' is clicked, the items are fliped but their reactive blocks do not run.
@@ -107,6 +111,7 @@ Reactive blocks can have functions for disposal:
         onclick: () => blink.value = !blink.value
       }, () => blink.value ? 'Stop' : 'Start')
     );
+[Try on JSFiddle](https://jsfiddle.net/shin1m/zfertn21/)
 
 A function passed to `$dispose` is called when the current content of the reactive block is disposed.
 `$` in `$ => { ... }` is the `div` element since reflx passes the parent element to a reactive function.
@@ -121,6 +126,7 @@ By specifying a namespace URI, `$tags` returns a proxy object for the namespace 
         path({d: 'M 25,5 C 50,5 50,15 75,15'})
       )
     );
+[Try on JSFiddle](https://jsfiddle.net/shin1m/usmfL25k/)
 
 ## Observable
 
@@ -144,6 +150,7 @@ Any objects which implement `Observable` can be used as dependencies of reactive
         for (const x of observers) x();
       }}, '+1'))
     );
+[Try on JSFiddle](https://jsfiddle.net/shin1m/0guf4L3x/)
 
 `$use` in `() => $use(state).count` declares `state` as a dependency of the reactive block.
 
