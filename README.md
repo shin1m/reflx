@@ -156,7 +156,37 @@ Any objects which implement `Observable` can be used as dependencies of reactive
 
 ## Examples
 
-TBD
+### Textarea and Content Editable
+
+The contents of `textarea` and `contenteditable` must be handled differently:
+
+    const text = new State('');
+    $add(document.body,
+      textarea({
+        oninput: e => text.value = e.target.value
+      }, () => ({value: text.value}))
+    );
+    $add(document.body,
+      (() => {
+        const e = div({contenteditable: 'plaintext-only',
+          oninput: () => text.value = e.textContent
+        });
+        return [e, () => {
+          if (text.value !== e.textContent) e.textContent = text.value;
+        }];
+      })()
+    );
+
+Note that the content of `textarea` is specified as `value` property not as a text node.
+This is because to avoid that the text composition session of `textarea` is reset by manipulating its child nodes.
+
+Also note that the contenteditable `div` does not have any reactive blocks and is manipulated manually in a reactive block outside of it.
+If a reactive block is created by passing a function to a contenteditable element, it failes to run after the content of the element is edited.
+This is due to the following...
+For a reactive block, reflx places a couple of comment nodes into its element.
+The comment nodes are the anchors indicating the range that the reactive block manages.
+If the element is contenteditable, they are removed by the browser while the content is edited.
+Once this happens, the reactive block can not locate the range.
 
 ## API Reference
 
