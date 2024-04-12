@@ -176,6 +176,7 @@ The contents of `textarea` and `contenteditable` must be handled differently:
         }];
       })()
     );
+[Try on JSFiddle](https://jsfiddle.net/shin1m/f3og8a6p/)
 
 Note that the content of `textarea` is specified as `value` property not as a text node.
 This is because to avoid that the text composition session of `textarea` is reset by manipulating its child nodes.
