@@ -189,6 +189,71 @@ The comment nodes are the anchors indicating the range that the reactive block m
 If the element is contenteditable, they are removed by the browser while the content is edited.
 Once this happens, the reactive block can not locate the range.
 
+### Sort by Drag
+
+The following example shows how to handle sizes and positions in reactive blocks:
+
+    const items = new State([{}, {}, {}, {}, {}]);
+    $add(document.body,
+      div({class: 'drag'}, $ => {
+        const post = new State(null);
+        const drag = (x, e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const original = items.value;
+          const index = original.indexOf(x);
+          const row = $.children[index];
+          $.setPointerCapture(e.pointerId);
+          if (!$.hasPointerCapture(e.pointerId)) return;
+          $.onlostpointercapture = () => {
+            row.classList.remove('grabbing');
+            row.style.top = null;
+            post.value = $.onlostpointercapture = $.onpointermove = null;
+          };
+          row.classList.add('grabbing');
+          const ys = [...$.children].map(x => {
+            const {y, height} = x.getBoundingClientRect();
+            return y + height / 2;
+          });
+          ys[ys.length - 1] = Infinity;
+          const y0 = row.getBoundingClientRect().y;
+          const {clientY} = e;
+          $.onpointermove = e => {
+            const y1 = y0 + e.clientY - clientY;
+            const xs = [...original];
+            const x = xs.splice(index, 1);
+            xs.splice(ys.findIndex(y => y >= y1), 0, ...x);
+            items.value = xs;
+            post.value = () => {
+              const d = parseFloat(row.style.top);
+              row.style.top = `${y1 - (row.getBoundingClientRect().y - (isNaN(d) ? 0 : d))}px`;
+            };
+          };
+        };
+        return () => [items.value.map(x => $for(x, () => div({
+          style: `background-color: #${(Math.floor(Math.random() * 0x1000) + 0x1000).toString(16).substring(1)}`,
+          onpointerdown: e => drag(x, e)
+        }))), post.value];
+      })
+    );
+[Try on JSFiddle](https://jsfiddle.net/shin1m/k1zoxycb/)
+
+`post` does the key role here.
+The other code is not so special to reflx despite that it is rather long.
+Note that `post.value` in `() => [..., post.value]` is a function during a drag operation.
+The function can correctly adjust the position of `div` because it runs after the DOM manipulation of the `div`s.
+During the drag operation, the following happens:
+- Changing `items.value` or `post.value` in `$.onpointermove = e => { ... }` triggers `() => [..., post.value]` to run.
+- The list of `div`s returned by `() => [..., post.value]` are placed into the DOM document.
+- A new reactive block is created for `post.value`.
+- The reactive block runs in a next microtask.
+
+### TODO List
+
+[Try on JSFiddle](https://jsfiddle.net/shin1m/x0ue369s/)
+
+This example contains almost all the topics explained so far.
+
 ## API Reference
 
 See [API](API.md).
