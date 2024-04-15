@@ -1,6 +1,6 @@
 {
   "name": "reflx",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A small library for adding reactivity to the DOM",
   "keywords": "reactive frontend",
   "license": "MIT",
