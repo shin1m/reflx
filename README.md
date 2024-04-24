@@ -4,16 +4,18 @@ reflx is a small library for adding reactivity to the DOM.
 
 The DOM composition is heavily inspired by VanJS:
 
-    import {$add, $tags} from 'reflx';
-    const {div, h2, a} = $tags;
-    $add(document.body,
-      h2('Hello, reflx!'),
-      div({class: 'hello'},
-        'Go to ',
-        a({href: 'https://github.com/shin1m/reflx'}, 'reflx'),
-        '.'
-      )
-    );
+```js
+import {$add, $tags} from 'reflx';
+const {div, h2, a} = $tags;
+$add(document.body,
+  h2('Hello, reflx!'),
+  div({class: 'hello'},
+    'Go to ',
+    a({href: 'https://github.com/shin1m/reflx'}, 'reflx'),
+    '.'
+  )
+);
+```
 [Try on JSFiddle](https://jsfiddle.net/shin1m/6uw8svjf/)
 
 `$add` adds DOM elements to the parent.
@@ -28,15 +30,17 @@ It also adds/applies its arguments to the element:
 
 Reactivity is enabled by passing functions to `$add` or element creators:
 
-    import {State} from 'reflx/state';
-    const count = new State(0);
-    $add(document.body,
-      div('Count: ', () => count.value),
-      div(
-        button({onclick: () => ++count.value}, '+1'),
-        button({onclick: () => count.value = 0}, 'Reset')
-      )
-    );
+```js
+import {State} from 'reflx/state';
+const count = new State(0);
+$add(document.body,
+  div('Count: ', () => count.value),
+  div(
+    button({onclick: () => ++count.value}, '+1'),
+    button({onclick: () => count.value = 0}, 'Reset')
+  )
+);
+```
 [Try on JSFiddle](https://jsfiddle.net/shin1m/23kqfdrL/)
 
 `() => count.value` is a reactive function which runs everytime after `count.value` has changed.
@@ -55,18 +59,20 @@ Let's call the object a reactive block.
 
 Reactive blocks can be nested:
 
-    const parent = new State(0);
-    const child = new State(0);
-    let serial = 0;
-    $add(document.body,
-      div('Parent: ', () => [`[${++serial}]{`, parent.value,
-        ' Child: ', () => [`[${++serial}]{`, child.value, '}'],
-      '}']),
-      div(
-        button({onclick: () => ++parent.value}, 'Parent +1'),
-        button({onclick: () => ++child.value}, 'Child +1')
-      )
-    );
+```js
+const parent = new State(0);
+const child = new State(0);
+let serial = 0;
+$add(document.body,
+  div('Parent: ', () => [`[${++serial}]{`, parent.value,
+    ' Child: ', () => [`[${++serial}]{`, child.value, '}'],
+  '}']),
+  div(
+    button({onclick: () => ++parent.value}, 'Parent +1'),
+    button({onclick: () => ++child.value}, 'Child +1')
+  )
+);
+```
 [Try on JSFiddle](https://jsfiddle.net/shin1m/8yga5r4L/)
 
 ```[`[${++serial}]{`, ..., '}']``` is just for seeing how reactive functions run.
@@ -76,16 +82,18 @@ When 'Child +1' is clicked, only the child reactive block runs.
 Normally, nested reactive blocks are destroyed and created again from scratch whenever their parents run.
 They can be preserved by using `$for`:
 
-    const items = new State([new State(0), new State(0)]);
-    let serial = 0;
-    $add(document.body,
-      div(() => [`[${++serial}]{`,
-        items.value.map(x => $for(x, () => [`[${++serial}]{`,
-          button({onclick: () => ++x.value}, `Clicked: ${x.value}`),
-        '}'])),
-      '}']),
-      button({onclick: () => items.value = items.value.toReversed()}, 'Flip')
-    );
+```js
+const items = new State([new State(0), new State(0)]);
+let serial = 0;
+$add(document.body,
+  div(() => [`[${++serial}]{`,
+    items.value.map(x => $for(x, () => [`[${++serial}]{`,
+      button({onclick: () => ++x.value}, `Clicked: ${x.value}`),
+    '}'])),
+  '}']),
+  button({onclick: () => items.value = items.value.toReversed()}, 'Flip')
+);
+```
 [Try on JSFiddle](https://jsfiddle.net/shin1m/f8pmqdr1/)
 
 `$for(x, () => ...)` reuses the reactive block for `x` if it already exists in the parent reactive block.
@@ -95,22 +103,24 @@ When 'Flip' is clicked, the items are fliped but their reactive blocks do not ru
 
 Reactive blocks can have functions for disposal:
 
-    const blink = new State(false);
-    $add(document.body,
-      div($ => {
-        $.classList.toggle('blink', blink.value);
-        if (blink.value) {
-          const id = setInterval(() => $.classList.toggle('on'), 500);
-          $dispose(() => {
-            console.log('dispose', id);
-            clearInterval(id);
-          });
-        }
-      }, 'Hello, World!'),
-      button({
-        onclick: () => blink.value = !blink.value
-      }, () => blink.value ? 'Stop' : 'Start')
-    );
+```js
+const blink = new State(false);
+$add(document.body,
+  div($ => {
+    $.classList.toggle('blink', blink.value);
+    if (blink.value) {
+      const id = setInterval(() => $.classList.toggle('on'), 500);
+      $dispose(() => {
+        console.log('dispose', id);
+        clearInterval(id);
+      });
+    }
+  }, 'Hello, World!'),
+  button({
+    onclick: () => blink.value = !blink.value
+  }, () => blink.value ? 'Stop' : 'Start')
+);
+```
 [Try on JSFiddle](https://jsfiddle.net/shin1m/zfertn21/)
 
 A function passed to `$dispose` is called when the current content of the reactive block is disposed.
@@ -120,12 +130,14 @@ A function passed to `$dispose` is called when the current content of the reacti
 
 By specifying a namespace URI, `$tags` returns a proxy object for the namespace URI.
 
-    const {svg, path} = $tags('http://www.w3.org/2000/svg');
-    $add(document.body,
-      svg({viewBox: '0 0 100 20'},
-        path({d: 'M 25,5 C 50,5 50,15 75,15'})
-      )
-    );
+```js
+const {svg, path} = $tags('http://www.w3.org/2000/svg');
+$add(document.body,
+  svg({viewBox: '0 0 100 20'},
+    path({d: 'M 25,5 C 50,5 50,15 75,15'})
+  )
+);
+```
 [Try on JSFiddle](https://jsfiddle.net/shin1m/usmfL25k/)
 
 ## Observable
@@ -133,23 +145,25 @@ By specifying a namespace URI, `$tags` returns a proxy object for the namespace 
 `State` is a reference implementation of reflx's `Observable`.
 Any objects which implement `Observable` can be used as dependencies of reactive blocks:
 
-    import {$add, $tags, $use} from 'reflx';
-    const {div, button} = $tags;
-    const observers = new Set();
-    const state = {
-      on(x) {
-        observers.add(x);
-        return () => observers.delete(x);
-      },
-      count: 0
-    };
-    $add(document.body,
-      div('Count: ', () => $use(state).count),
-      div(button({onclick: () => {
-        ++state.count;
-        for (const x of observers) x();
-      }}, '+1'))
-    );
+```js
+import {$add, $tags, $use} from 'reflx';
+const {div, button} = $tags;
+const observers = new Set();
+const state = {
+  on(x) {
+    observers.add(x);
+    return () => observers.delete(x);
+  },
+  count: 0
+};
+$add(document.body,
+  div('Count: ', () => $use(state).count),
+  div(button({onclick: () => {
+    ++state.count;
+    for (const x of observers) x();
+  }}, '+1'))
+);
+```
 [Try on JSFiddle](https://jsfiddle.net/shin1m/0guf4L3x/)
 
 `$use` in `() => $use(state).count` declares `state` as a dependency of the reactive block.
@@ -160,22 +174,24 @@ Any objects which implement `Observable` can be used as dependencies of reactive
 
 The contents of `textarea` and `contenteditable` must be handled differently:
 
-    const text = new State('');
-    $add(document.body,
-      textarea({
-        oninput: e => text.value = e.target.value
-      }, () => ({value: text.value}))
-    );
-    $add(document.body,
-      (() => {
-        const e = div({contenteditable: 'plaintext-only',
-          oninput: () => text.value = e.textContent
-        });
-        return [e, () => {
-          if (text.value !== e.textContent) e.textContent = text.value;
-        }];
-      })()
-    );
+```js
+const text = new State('');
+$add(document.body,
+  textarea({
+    oninput: e => text.value = e.target.value
+  }, () => ({value: text.value}))
+);
+$add(document.body,
+  (() => {
+    const e = div({contenteditable: 'plaintext-only',
+      oninput: () => text.value = e.textContent
+    });
+    return [e, () => {
+      if (text.value !== e.textContent) e.textContent = text.value;
+    }];
+  })()
+);
+```
 [Try on JSFiddle](https://jsfiddle.net/shin1m/f3og8a6p/)
 
 Note that the content of `textarea` is specified as `value` property not as a text node.
@@ -193,49 +209,51 @@ Once this happens, the reactive block can not locate the range.
 
 The following example shows how to handle sizes and positions in reactive blocks:
 
-    const items = new State([{}, {}, {}, {}, {}]);
-    $add(document.body,
-      div({class: 'drag'}, $ => {
-        const post = new State(null);
-        const drag = (x, e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const original = items.value;
-          const index = original.indexOf(x);
-          const row = $.children[index];
-          $.setPointerCapture(e.pointerId);
-          if (!$.hasPointerCapture(e.pointerId)) return;
-          $.onlostpointercapture = () => {
-            row.classList.remove('grabbing');
-            row.style.top = null;
-            post.value = $.onlostpointercapture = $.onpointermove = null;
-          };
-          row.classList.add('grabbing');
-          const ys = [...$.children].map(x => {
-            const {y, height} = x.getBoundingClientRect();
-            return y + height / 2;
-          });
-          ys[ys.length - 1] = Infinity;
-          const y0 = row.getBoundingClientRect().y;
-          const {clientY} = e;
-          $.onpointermove = e => {
-            const y1 = y0 + e.clientY - clientY;
-            const xs = [...original];
-            const x = xs.splice(index, 1);
-            xs.splice(ys.findIndex(y => y >= y1), 0, ...x);
-            items.value = xs;
-            post.value = () => {
-              const d = parseFloat(row.style.top);
-              row.style.top = `${y1 - (row.getBoundingClientRect().y - (isNaN(d) ? 0 : d))}px`;
-            };
-          };
+```js
+const items = new State([{}, {}, {}, {}, {}]);
+$add(document.body,
+  div({class: 'drag'}, $ => {
+    const post = new State(null);
+    const drag = (x, e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const original = items.value;
+      const index = original.indexOf(x);
+      const row = $.children[index];
+      $.setPointerCapture(e.pointerId);
+      if (!$.hasPointerCapture(e.pointerId)) return;
+      $.onlostpointercapture = () => {
+        row.classList.remove('grabbing');
+        row.style.top = null;
+        post.value = $.onlostpointercapture = $.onpointermove = null;
+      };
+      row.classList.add('grabbing');
+      const ys = [...$.children].map(x => {
+        const {y, height} = x.getBoundingClientRect();
+        return y + height / 2;
+      });
+      ys[ys.length - 1] = Infinity;
+      const y0 = row.getBoundingClientRect().y;
+      const {clientY} = e;
+      $.onpointermove = e => {
+        const y1 = y0 + e.clientY - clientY;
+        const xs = [...original];
+        const x = xs.splice(index, 1);
+        xs.splice(ys.findIndex(y => y >= y1), 0, ...x);
+        items.value = xs;
+        post.value = () => {
+          const d = parseFloat(row.style.top);
+          row.style.top = `${y1 - (row.getBoundingClientRect().y - (isNaN(d) ? 0 : d))}px`;
         };
-        return () => [items.value.map(x => $for(x, () => div({
-          style: `background-color: #${(Math.floor(Math.random() * 0x1000) + 0x1000).toString(16).substring(1)}`,
-          onpointerdown: e => drag(x, e)
-        }))), post.value];
-      })
-    );
+      };
+    };
+    return () => [items.value.map(x => $for(x, () => div({
+      style: `background-color: #${(Math.floor(Math.random() * 0x1000) + 0x1000).toString(16).substring(1)}`,
+      onpointerdown: e => drag(x, e)
+    }))), post.value];
+  })
+);
+```
 [Try on JSFiddle](https://jsfiddle.net/shin1m/k1zoxycb/)
 
 `post` does the key role here.
