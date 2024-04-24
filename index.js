@@ -30,7 +30,7 @@ function addArray(parent, before, xs) {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element
  */
 /**
- * @typedef {null|undefined|boolean|number|string|symbol|Object|Array<module:index~ElementParameter>|external:Node|module:index~ReactiveFunction|module:index~Block} ElementParameter
+ * @typedef {null|undefined|boolean|number|string|symbol|Object|Array<module:index~Parameter>|external:Node|module:index~Reactive|module:index~Block} Parameter
  * Types which can be added/applied to a parent {@link external:Element}.
  * <ul>
  * <li>null and undefined are ignored.</li>
@@ -43,42 +43,42 @@ function addArray(parent, before, xs) {
  * </ul>
  */
 /**
- * @typedef {function} ReactiveFunction
+ * @typedef {function} Reactive
  * Called in a microtask to render a reactive block.
- * <p>The returned {@link module:index~ElementParameter} is added/applied to the parent.</p>
+ * <p>The returned {@link module:index~Parameter} is added/applied to the parent.</p>
  * @param {external:Element} $ The parent
- * @returns {module:index~ElementParameter}
+ * @returns {module:index~Parameter}
  */
 /**
  * @function
  * @description Adds/applies xs to the parent.
  * @param {external:Element} parent
- * @param {...module:index~ElementParameter} xs
+ * @param {...module:index~Parameter} xs
  * @returns {external:Element} The parent
  */
 export const $add = (parent, ...xs) => addArray(parent, null, xs);
 
 /**
- * @typedef {function} ElementCreator
+ * @typedef {function} Creator
  * Creates a new element and adds/applies xs to the element.
- * @param {...module:index~ElementParameter} xs
+ * @param {...module:index~Parameter} xs
  * @returns {external:Element}
  */
 /**
- * @typedef {Proxy} ElementFactory
+ * @typedef {Proxy} Factory
  * A proxy object with dynamic properties which return element creators.
- * @property {module:index~ElementCreator} &lt;tag&nbsp;name&gt;
+ * @property {module:index~Creator} &lt;tag&nbsp;name&gt;
  * Returns an element creator for the &lt;tag&nbsp;name&gt;.
  */
 /**
- * @constant {module:index~ElementFactory} $tags
+ * @constant {module:index~Factory} $tags
  * @static
  */
 /**
  * @function
  * @description Creates an element factory for the namespaceURI.
  * @param {string} namespaceURI
- * @returns {module:index~ElementFactory}
+ * @returns {module:index~Factory}
  */
 export const $tags = new Proxy(namespaceURI => new Proxy({}, {
   get(target, property) {
@@ -101,13 +101,13 @@ export const $tags = new Proxy(namespaceURI => new Proxy({}, {
 /**
  * @function module:index~Observable#on
  * @description add an observer.
- * @param x {module:index~Action} an observer
+ * @param f {module:index~Action} an observer
  * @returns {module:index~Action} a function to remove the observer.
  */
 /**
  * @function
  * @description Declares x as a dependency of the current reactive block.
- * <p>Adds an observer which triggers to run {@link module:index~ReactiveFunction} of the current reactive block to x by calling {@link module:index~Observable#on}.</p>
+ * <p>Adds an observer which triggers to run {@link module:index~Reactive} of the current reactive block to x by calling {@link module:index~Observable#on}.</p>
  * <p>Does nothing outside of reactive blocks.</p>
  * @param {module:index~Observable} x
  * @returns {module:index~Observable} x
@@ -126,7 +126,7 @@ export let $dispose;
  * The key must be unique in the current reactive block.
  * <p>If the reactive block for the key already exists, it is reused and its content is preserved as long as its dependencies do not change.</p>
  * @param key
- * @param {module:index~ReactiveFunction} f
+ * @param {module:index~Reactive} f
  * @returns {module:index~Block}
  */
 export let $for;

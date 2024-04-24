@@ -16,9 +16,9 @@ export class State {
   constructor(value) {
     this.#value = value;
   }
-  on(x) {
-    this.#observers.add(x);
-    return () => this.#observers.delete(x);
+  on(f) {
+    this.#observers.add(f);
+    return () => this.#observers.delete(f);
   }
   /**
    * <p>Getting the value declares this as a dependency of the current reactive block by calling {@link module:index.$use}.</p>

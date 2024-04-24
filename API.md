@@ -13,25 +13,25 @@
 
 * [index](#module_index)
     * _static_
-        * [.$tags](#module_index.$tags) : [<code>ElementFactory</code>](#module_index..ElementFactory)
+        * [.$tags](#module_index.$tags) : [<code>Factory</code>](#module_index..Factory)
         * [.$add(parent, ...xs)](#module_index.$add) ⇒ [<code>Element</code>](https://developer.mozilla.org/en-US/docs/Web/API/Element)
-        * [.$tags(namespaceURI)](#module_index.$tags) ⇒ [<code>ElementFactory</code>](#module_index..ElementFactory)
+        * [.$tags(namespaceURI)](#module_index.$tags) ⇒ [<code>Factory</code>](#module_index..Factory)
         * [.$use(x)](#module_index.$use) ⇒ [<code>Observable</code>](#module_index..Observable)
         * [.$dispose(f)](#module_index.$dispose) ⇒ <code>void</code>
         * [.$for(key, f)](#module_index.$for) ⇒ [<code>Block</code>](#module_index..Block)
     * _inner_
         * [~Observable](#module_index..Observable)
-            * [.on(x)](#module_index..Observable+on) ⇒ [<code>Action</code>](#module_index..Action)
+            * [.on(f)](#module_index..Observable+on) ⇒ [<code>Action</code>](#module_index..Action)
         * [~Block](#module_index..Block)
-        * [~ElementParameter](#module_index..ElementParameter) : <code>null</code> \| <code>undefined</code> \| <code>boolean</code> \| <code>number</code> \| <code>string</code> \| <code>symbol</code> \| <code>Object</code> \| [<code>Array.&lt;ElementParameter&gt;</code>](#module_index..ElementParameter) \| [<code>Node</code>](https://developer.mozilla.org/en-US/docs/Web/API/Node) \| [<code>ReactiveFunction</code>](#module_index..ReactiveFunction) \| [<code>Block</code>](#module_index..Block)
-        * [~ReactiveFunction](#module_index..ReactiveFunction) ⇒ [<code>ElementParameter</code>](#module_index..ElementParameter)
-        * [~ElementCreator](#module_index..ElementCreator) ⇒ [<code>Element</code>](https://developer.mozilla.org/en-US/docs/Web/API/Element)
-        * [~ElementFactory](#module_index..ElementFactory) : <code>Proxy</code>
+        * [~Parameter](#module_index..Parameter) : <code>null</code> \| <code>undefined</code> \| <code>boolean</code> \| <code>number</code> \| <code>string</code> \| <code>symbol</code> \| <code>Object</code> \| [<code>Array.&lt;Parameter&gt;</code>](#module_index..Parameter) \| [<code>Node</code>](https://developer.mozilla.org/en-US/docs/Web/API/Node) \| [<code>Reactive</code>](#module_index..Reactive) \| [<code>Block</code>](#module_index..Block)
+        * [~Reactive](#module_index..Reactive) ⇒ [<code>Parameter</code>](#module_index..Parameter)
+        * [~Creator](#module_index..Creator) ⇒ [<code>Element</code>](https://developer.mozilla.org/en-US/docs/Web/API/Element)
+        * [~Factory](#module_index..Factory) : <code>Proxy</code>
         * [~Action](#module_index..Action) ⇒ <code>void</code>
 
 <a name="module_index.$tags"></a>
 
-### index.$tags : [<code>ElementFactory</code>](#module_index..ElementFactory)
+### index.$tags : [<code>Factory</code>](#module_index..Factory)
 **Kind**: static constant of [<code>index</code>](#module_index)  
 <a name="module_index.$add"></a>
 
@@ -44,11 +44,11 @@ Adds/applies xs to the parent.
 | Param | Type |
 | --- | --- |
 | parent | [<code>Element</code>](https://developer.mozilla.org/en-US/docs/Web/API/Element) | 
-| ...xs | [<code>ElementParameter</code>](#module_index..ElementParameter) | 
+| ...xs | [<code>Parameter</code>](#module_index..Parameter) | 
 
 <a name="module_index.$tags"></a>
 
-### index.$tags(namespaceURI) ⇒ [<code>ElementFactory</code>](#module_index..ElementFactory)
+### index.$tags(namespaceURI) ⇒ [<code>Factory</code>](#module_index..Factory)
 Creates an element factory for the namespaceURI.
 
 **Kind**: static method of [<code>index</code>](#module_index)  
@@ -61,7 +61,7 @@ Creates an element factory for the namespaceURI.
 
 ### index.$use(x) ⇒ [<code>Observable</code>](#module_index..Observable)
 Declares x as a dependency of the current reactive block.
-<p>Adds an observer which triggers to run [ReactiveFunction](#module_index..ReactiveFunction) of the current reactive block to x by calling [on](#module_index..Observable+on).</p>
+<p>Adds an observer which triggers to run [Reactive](#module_index..Reactive) of the current reactive block to x by calling [on](#module_index..Observable+on).</p>
 <p>Does nothing outside of reactive blocks.</p>
 
 **Kind**: static method of [<code>index</code>](#module_index)  
@@ -94,7 +94,7 @@ The key must be unique in the current reactive block.
 | Param | Type |
 | --- | --- |
 | key |  | 
-| f | [<code>ReactiveFunction</code>](#module_index..ReactiveFunction) | 
+| f | [<code>Reactive</code>](#module_index..Reactive) | 
 
 <a name="module_index..Observable"></a>
 
@@ -104,7 +104,7 @@ What [$use](#module_index.$use) requires in order for reactive blocks to be reac
 **Kind**: inner interface of [<code>index</code>](#module_index)  
 <a name="module_index..Observable+on"></a>
 
-#### observable.on(x) ⇒ [<code>Action</code>](#module_index..Action)
+#### observable.on(f) ⇒ [<code>Action</code>](#module_index..Action)
 add an observer.
 
 **Kind**: instance method of [<code>Observable</code>](#module_index..Observable)  
@@ -112,7 +112,7 @@ add an observer.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | [<code>Action</code>](#module_index..Action) | an observer |
+| f | [<code>Action</code>](#module_index..Action) | an observer |
 
 <a name="module_index..Block"></a>
 
@@ -120,9 +120,9 @@ add an observer.
 An opaque class which represents a reactive block.
 
 **Kind**: inner class of [<code>index</code>](#module_index)  
-<a name="module_index..ElementParameter"></a>
+<a name="module_index..Parameter"></a>
 
-### index~ElementParameter : <code>null</code> \| <code>undefined</code> \| <code>boolean</code> \| <code>number</code> \| <code>string</code> \| <code>symbol</code> \| <code>Object</code> \| [<code>Array.&lt;ElementParameter&gt;</code>](#module_index..ElementParameter) \| [<code>Node</code>](https://developer.mozilla.org/en-US/docs/Web/API/Node) \| [<code>ReactiveFunction</code>](#module_index..ReactiveFunction) \| [<code>Block</code>](#module_index..Block)
+### index~Parameter : <code>null</code> \| <code>undefined</code> \| <code>boolean</code> \| <code>number</code> \| <code>string</code> \| <code>symbol</code> \| <code>Object</code> \| [<code>Array.&lt;Parameter&gt;</code>](#module_index..Parameter) \| [<code>Node</code>](https://developer.mozilla.org/en-US/docs/Web/API/Node) \| [<code>Reactive</code>](#module_index..Reactive) \| [<code>Block</code>](#module_index..Block)
 Types which can be added/applied to a parent [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element).
 <ul>
 <li>null and undefined are ignored.</li>
@@ -135,11 +135,11 @@ Types which can be added/applied to a parent [Element](https://developer.mozilla
 </ul>
 
 **Kind**: inner typedef of [<code>index</code>](#module_index)  
-<a name="module_index..ReactiveFunction"></a>
+<a name="module_index..Reactive"></a>
 
-### index~ReactiveFunction ⇒ [<code>ElementParameter</code>](#module_index..ElementParameter)
+### index~Reactive ⇒ [<code>Parameter</code>](#module_index..Parameter)
 Called in a microtask to render a reactive block.
-<p>The returned [ElementParameter](#module_index..ElementParameter) is added/applied to the parent.</p>
+<p>The returned [Parameter](#module_index..Parameter) is added/applied to the parent.</p>
 
 **Kind**: inner typedef of [<code>index</code>](#module_index)  
 
@@ -147,20 +147,20 @@ Called in a microtask to render a reactive block.
 | --- | --- | --- |
 | $ | [<code>Element</code>](https://developer.mozilla.org/en-US/docs/Web/API/Element) | The parent |
 
-<a name="module_index..ElementCreator"></a>
+<a name="module_index..Creator"></a>
 
-### index~ElementCreator ⇒ [<code>Element</code>](https://developer.mozilla.org/en-US/docs/Web/API/Element)
+### index~Creator ⇒ [<code>Element</code>](https://developer.mozilla.org/en-US/docs/Web/API/Element)
 Creates a new element and adds/applies xs to the element.
 
 **Kind**: inner typedef of [<code>index</code>](#module_index)  
 
 | Param | Type |
 | --- | --- |
-| ...xs | [<code>ElementParameter</code>](#module_index..ElementParameter) | 
+| ...xs | [<code>Parameter</code>](#module_index..Parameter) | 
 
-<a name="module_index..ElementFactory"></a>
+<a name="module_index..Factory"></a>
 
-### index~ElementFactory : <code>Proxy</code>
+### index~Factory : <code>Proxy</code>
 A proxy object with dynamic properties which return element creators.
 
 **Kind**: inner typedef of [<code>index</code>](#module_index)  
@@ -168,7 +168,7 @@ A proxy object with dynamic properties which return element creators.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| &lt;tag&nbsp;name&gt; | [<code>ElementCreator</code>](#module_index..ElementCreator) | Returns an element creator for the &lt;tag&nbsp;name&gt;. |
+| &lt;tag&nbsp;name&gt; | [<code>Creator</code>](#module_index..Creator) | Returns an element creator for the &lt;tag&nbsp;name&gt;. |
 
 <a name="module_index..Action"></a>
 
@@ -182,7 +182,7 @@ A proxy object with dynamic properties which return element creators.
     * [.State](#module_state.State)
         * [new exports.State(value)](#new_module_state.State_new)
         * [.value](#module_state.State+value)
-        * [.on(x)](#module_state.State+on) ⇒ [<code>Action</code>](#module_index..Action)
+        * [.on(f)](#module_state.State+on) ⇒ [<code>Action</code>](#module_index..Action)
 
 <a name="module_state.State"></a>
 
@@ -195,7 +195,7 @@ A reference implementation of [Observable](#module_index..Observable) holding a 
 * [.State](#module_state.State)
     * [new exports.State(value)](#new_module_state.State_new)
     * [.value](#module_state.State+value)
-    * [.on(x)](#module_state.State+on) ⇒ [<code>Action</code>](#module_index..Action)
+    * [.on(f)](#module_state.State+on) ⇒ [<code>Action</code>](#module_index..Action)
 
 <a name="new_module_state.State_new"></a>
 
@@ -214,7 +214,7 @@ A reference implementation of [Observable](#module_index..Observable) holding a 
 **Kind**: instance property of [<code>State</code>](#module_state.State)  
 <a name="module_state.State+on"></a>
 
-#### state.on(x) ⇒ [<code>Action</code>](#module_index..Action)
+#### state.on(f) ⇒ [<code>Action</code>](#module_index..Action)
 add an observer.
 
 **Kind**: instance method of [<code>State</code>](#module_state.State)  
@@ -223,5 +223,5 @@ add an observer.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | [<code>Action</code>](#module_index..Action) | an observer |
+| f | [<code>Action</code>](#module_index..Action) | an observer |
 
